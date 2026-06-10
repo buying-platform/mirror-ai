@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MirroirAI — See it before you cut it</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0d0a0f;
+      color: #f5ede8;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 560px;
+      background: linear-gradient(160deg, #1a0d1f 0%, #0d0a0f 60%);
+      display: flex;
+      align-items: center;
+      padding: 72px 64px;
+      overflow: hidden;
+    }
+
+    .hero-bg-circle {
+      position: absolute;
+      top: -100px;
+      right: -80px;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,142,108,0.16) 0%, rgba(196,142,108,0.04) 60%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 50%;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #c48e6c;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 68px;
+      font-weight: 300;
+      line-height: 1.05;
+      color: #f5ede8;
+      margin-bottom: 16px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: #c48e6c;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(245,237,232,0.5);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 360px;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 13px 32px;
+      border: 1px solid rgba(196,142,108,0.5);
+      color: #c48e6c;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: transparent;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(196,142,108,0.08);
+      border-color: #c48e6c;
+    }
+
+    /* hero image mosaic */
+    .hero-mosaic {
+      position: absolute;
+      right: 64px;
+      top: 48px;
+      bottom: 48px;
+      width: 42%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 2fr 1fr 1fr;
+      gap: 6px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .mosaic-cell {
+      position: relative;
+      overflow: hidden;
+      background: #1e1520;
+    }
+
+    .mosaic-cell.top { grid-column: span 2; }
+
+    .mosaic-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.88) brightness(0.85);
+      display: block;
+      transition: filter 0.4s, transform 0.4s;
+    }
+
+    .mosaic-cell:hover img {
+      filter: saturate(1) brightness(0.95);
+      transform: scale(1.02);
+    }
+
+    .mosaic-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(13,10,15,0.55) 100%);
+      pointer-events: none;
+    }
+
+    .mosaic-label {
+      position: absolute;
+      bottom: 9px;
+      left: 11px;
+      z-index: 2;
+      font-size: 9px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(245,237,232,0.55);
+      font-weight: 400;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,142,108,0.28) 30%, rgba(196,142,108,0.28) 70%, transparent);
+    }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: flex;
+      border-top: 1px solid rgba(196,142,108,0.1);
+      border-bottom: 1px solid rgba(196,142,108,0.1);
+      margin: 0 64px 0;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 28px 20px;
+      border-right: 1px solid rgba(196,142,108,0.1);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: #c48e6c;
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(245,237,232,0.3);
+      font-weight: 400;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 60px 64px;
+    }
+
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #c48e6c;
+      margin-bottom: 10px;
+      font-weight: 500;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.18;
+      color: #f5ede8;
+      margin-bottom: 16px;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: #c48e6c;
+    }
+
+    .section-body {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245,237,232,0.42);
+      line-height: 1.75;
+      max-width: 440px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 28px;
+      margin-top: 44px;
+    }
+
+    .step {
+      border-top: 1px solid rgba(196,142,108,0.22);
+      padding-top: 22px;
+    }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px;
+      font-weight: 300;
+      color: rgba(196,142,108,0.2);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #f5ede8;
+      margin-bottom: 9px;
+      letter-spacing: 0.2px;
+    }
+
+    .step-body {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(245,237,232,0.42);
+      line-height: 1.72;
+    }
+
+    /* ── STYLES GRID ── */
+    .styles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .style-card {
+      position: relative;
+      border-radius: 2px;
+      overflow: hidden;
+      aspect-ratio: 3 / 4;
+      background: #1e1520;
+    }
+
+    .style-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.82) brightness(0.82);
+      display: block;
+      transition: filter 0.35s, transform 0.35s;
+    }
+
+    .style-card:hover img {
+      filter: saturate(1) brightness(0.95);
+      transform: scale(1.03);
+    }
+
+    .style-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 42%, rgba(13,10,15,0.78) 100%);
+      pointer-events: none;
+    }
+
+    .style-name {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      z-index: 2;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      font-style: italic;
+      color: #f5ede8;
+      line-height: 1.2;
+    }
+
+    .style-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(245,237,232,0.5);
+      background: rgba(13,10,15,0.42);
+      padding: 4px 9px;
+      font-weight: 400;
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      background: #130e18;
+      padding: 64px 64px;
+      text-align: center;
+      position: relative;
+    }
+
+    .quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 96px;
+      font-weight: 300;
+      color: rgba(196,142,108,0.12);
+      line-height: 0.4;
+      display: block;
+      margin-bottom: 28px;
+    }
+
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 300;
+      font-style: italic;
+      color: #f5ede8;
+      line-height: 1.55;
+      max-width: 520px;
+      margin: 0 auto 22px;
+    }
+
+    .quote-attr {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(196,142,108,0.55);
+      font-weight: 400;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(196,142,108,0.1);
+      margin: 0 64px 60px;
+    }
+
+    .feature {
+      padding: 32px 28px;
+      border-bottom: 1px solid rgba(196,142,108,0.1);
+      border-right: 1px solid rgba(196,142,108,0.1);
+    }
+
+    .feature:nth-child(even) { border-right: none; }
+    .feature:nth-child(n+3) { border-bottom: none; }
+
+    .feature-icon {
+      font-size: 22px;
+      color: #c48e6c;
+      margin-bottom: 13px;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #f5ede8;
+      margin-bottom: 8px;
+    }
+
+    .feature-body {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(245,237,232,0.42);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #0a0710;
+      padding: 40px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      color: #f5ede8;
+      letter-spacing: 1px;
+    }
+
+    .footer-brand span {
+      color: #c48e6c;
+      font-style: italic;
+    }
+
+    .footer-tagline {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(245,237,232,0.25);
+      font-weight: 300;
+      margin-top: 5px;
+    }
+
+    .footer-right { text-align: right; }
+
+    .footer-url {
+      font-size: 13px;
+      color: #c48e6c;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: rgba(245,237,232,0.22);
+      margin-top: 5px;
+      font-weight: 300;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { padding: 48px 32px; min-height: auto; flex-direction: column; }
+      .hero-content { max-width: 100%; }
+      .hero-title { font-size: 48px; }
+      .hero-mosaic { position: static; width: 100%; height: 320px; margin-top: 36px; }
+      .section { padding: 48px 32px; }
+      .stats-row { margin: 0 32px; }
+      .features-grid { margin: 0 32px 48px; }
+      .footer { padding: 36px 32px; flex-direction: column; gap: 20px; text-align: center; }
+      .footer-right { text-align: center; }
+      .steps { grid-template-columns: 1fr; }
+      .styles-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .hero-title { font-size: 36px; }
+      .section-title { font-size: 30px; }
+      .styles-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature:nth-child(even) { border-right: none; }
+      .feature:nth-child(n+2) { border-bottom: none; }
+      .feature:last-child { border-bottom: none; }
+      .stats-row { flex-wrap: wrap; }
+      .stat { min-width: 50%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-circle"></div>
+
+    <div class="hero-content">
+      <span class="eyebrow">AI hair preview · Since 2026</span>
+      <h1 class="hero-title">
+        See your<br>
+        next look<br>
+        <em>before</em> you<br>
+        commit.
+      </h1>
+      <p class="hero-sub">Upload one photo. See yourself in nine different hairstyles — realistically rendered on your actual face, in seconds.</p>
+      <a href="#how-it-works" class="btn-outline">Try it free &rarr;</a>
+    </div>
+
+    <div class="hero-mosaic">
+      <div class="mosaic-cell top">
+        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80" alt="woman in salon chair" />
+        <span class="mosaic-label">The new you — rendered</span>
+      </div>
+      <div class="mosaic-cell">
+        <img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?w=500&q=80" alt="short bob haircut" />
+        <span class="mosaic-label">Bob</span>
+      </div>
+      <div class="mosaic-cell">
+        <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=500&q=80" alt="natural hair" />
+        <span class="mosaic-label">Natural</span>
+      </div>
+      <div class="mosaic-cell">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80" alt="woman portrait" />
+        <span class="mosaic-label">Pixie</span>
+      </div>
+      <div class="mosaic-cell">
+        <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=500&q=80" alt="wavy hair" />
+        <span class="mosaic-label">Waves</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- STATS -->
+  <section class="section" style="padding-top: 48px; padding-bottom: 0;">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">9</div>
+        <div class="stat-label">styles per upload</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">30s</div>
+        <div class="stat-label">to your previews</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">photorealistic</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">All</div>
+        <div class="stat-label">hair types welcome</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <span class="section-label">How it works</span>
+    <h2 class="section-title">Three steps to <em>clarity</em></h2>
+    <p class="section-body">No guessing. No awkward salon conversations. Just a grid of you — in looks you actually love.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Upload your photo</div>
+        <p class="step-body">A clear, front-facing selfie is all you need. Good lighting helps — but we work with what you've got.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Choose your direction</div>
+        <p class="step-body">Shorter? Bigger? Straighter? Curlier? A colour change? Pick your vibe and let the AI do the rest.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">See your nine looks</div>
+        <p class="step-body">A photorealistic 3×3 grid of you — different cuts, textures, and lengths. Save the ones you love and show your stylist.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- STYLES SHOWCASE -->
+  <section class="section">
+    <span class="section-label">The looks</span>
+    <h2 class="section-title">Every style, <em>on you</em></h2>
+
+    <div class="styles-grid">
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?w=500&q=80" alt="bob hairstyle" />
+        <span class="style-tag">Classic</span>
+        <div class="style-name">The bob</div>
+      </div>
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1526045612212-70caf35c14df?w=500&q=80" alt="long wavy hair" />
+        <span class="style-tag">Effortless</span>
+        <div class="style-name">Long waves</div>
+      </div>
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=500&q=80" alt="pixie cut" />
+        <span class="style-tag">Bold</span>
+        <div class="style-name">Pixie cut</div>
+      </div>
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1523264939339-c89f9dadde2e?w=500&q=80" alt="natural curls" />
+        <span class="style-tag">Natural</span>
+        <div class="style-name">Full curls</div>
+      </div>
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80" alt="braids" />
+        <span class="style-tag">Protective</span>
+        <div class="style-name">Braids</div>
+      </div>
+      <div class="style-card">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80" alt="sleek straight" />
+        <span class="style-tag">Polished</span>
+        <div class="style-name">Sleek straight</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-section">
+    <span class="quote-mark">&ldquo;</span>
+    <p class="quote-text">I finally walked into the salon knowing exactly what I wanted — and walked out looking just like the preview.</p>
+    <p class="quote-attr">Amara, 29 &mdash; Lagos</p>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section" style="padding-bottom: 0;">
+    <span class="section-label">Why it's different</span>
+    <h2 class="section-title">Built for <em>real women</em></h2>
+  </section>
+
+  <div class="features-grid">
+    <div class="feature">
+      <i class="ti ti-sparkles feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Photorealistic, not cartoon</div>
+      <p class="feature-body">No filters or overlays. The AI renders hair on your actual face — realistic enough to use as a reference photo.</p>
+    </div>
+    <div class="feature">
+      <i class="ti ti-heart feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">All hair types, truly</div>
+      <p class="feature-body">4c coils, locs, fine straight, thick wavy — we've trained specifically on diverse hair textures so no one gets left behind.</p>
+    </div>
+    <div class="feature">
+      <i class="ti ti-share feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Share with your stylist</div>
+      <p class="feature-body">Download any preview and send it directly. No more pointing at someone else's photo and saying "kind of like this but…"</p>
+    </div>
+    <div class="feature">
+      <i class="ti ti-shield-check feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Your photo, your business</div>
+      <p class="feature-body">We never store or share your images beyond generating your previews. Your face belongs to you.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="divider"></div>
+  <footer class="footer">
+    <div>
+      <div class="footer-brand">Mirroir<span>AI</span></div>
+      <div class="footer-tagline">See it before you cut it</div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-url">mirrorai.com</div>
+      <div class="footer-note">3 free previews &middot; No card required</div>
+    </div>
+  </footer>
+
+</body>
+</html>
